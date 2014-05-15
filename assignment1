@@ -1,0 +1,161 @@
+#include "stdio.h"
+//定义结构体
+struct sqlist 
+{
+ int a[100];
+ int len;
+};
+//显示函数
+void showarray(struct sqlist la)
+{
+ int i;
+ printf("数组长度为%d\n",la.len);
+ printf("显示细节\n");
+ for (i=0;i<la.len;i++)
+  printf("%d  ",la.a[i]);
+ printf("\n");
+ 
+}
+//检索数组元素
+//找第i个元素
+void search(struct sqlist la,int i)
+{
+ if (i<la.len)
+ {
+  printf("第%d个元素是：%d\n",i,la.a[i]);
+ }
+ else
+ {
+  printf("第%d个元素不存在\n",i);
+ }
+}
+//数组排序
+void sort(struct sqlist *la)
+{
+ int i,j,k;
+ for(i=0;i<la->len;i++)
+ {
+  for(j=i+1;j<la->len;j++)
+  {
+   if(la->a[i]>la->a[j])
+   {  k=la->a[i];
+        la->a[i]=la->a[j];
+      la->a[j]=k;
+   }
+  }
+  
+ }
+ printf("排序后结果为：\n");
+ for(i=0;i<la->len;i++)
+  printf("%d  ",la->a[i]);
+  printf("\n");
+}
+//数据插入
+void insert(struct sqlist *la,int x,int i)
+{
+ int j;
+ if(la->len>=100)
+ {printf("数据太多了\n");}
+ else 
+ {   la->len++;
+  for(j=la->len;j>=i;j--)
+   la->a[j+1]=la->a[j];
+  la->a[i]=x;
+  printf("插入后结果为\n");
+  for(j=0;j<la->len;j++)
+   printf("%d  ",la->a[j]);
+   printf("\n");
+ }
+}
+//数据删除
+void Delete(struct sqlist *la,int x, int i)
+{
+ int j;
+ if((i<1)||(i>la->len))
+  printf("无法找到要删除数据\n");
+ else
+ {
+        for(j=i;j<la->len;j++)
+   la->a[j-1]=la->a[j];
+  la->len--;
+  printf("删除后结果为\n");
+  for(j=0;j<la->len;j++)
+   printf("%d  ",la->a[j]);
+   printf("\n");
+ }
+} 
+//数据修改
+void modify(struct sqlist *la,int x,int i)
+{
+ int j;
+ la->a[i]=x;
+ printf("修改后结果为\n");
+ for(j=0;j<la->len;j++)
+   printf("%d  ",la->a[j]);
+  printf("\n");
+}
+//退出
+main()
+{
+ //定义长度为100的整形数组数据
+ struct sqlist la;
+ 
+    int i=0;
+ int x=0;
+ int choice=1;//菜单选项
+ la.a[0]=0;la.a[1]=1;la.a[2]=2;la.a[3]=3;la.a[4]=4;la.a[5]=5;
+ la.len=6;
+ while(choice!=0)
+ {
+  printf("数组操作程序\n");
+  printf("1--显示数组\n");
+  printf("2--检索\n");
+  printf("3--排序\n");
+  printf("4--插入\n");
+  printf("5--删除\n");
+  printf("6--修改\n");
+  printf("0--退出\n");
+  printf("请选择：");
+  
+  scanf("%d",&choice);
+  switch (choice)
+  {
+  case 1://显示
+   showarray(la);
+   break;
+  case 2://检索 
+   {printf("请输入查找元素的下标：");
+   scanf("%d",&i);
+   search(la,i);
+   break;}
+  case 3://排序
+   sort(&la);
+   break;
+  case 4://插入
+   printf("请输入插入元素：");
+   scanf("%d",&x);
+   printf("请输入插入位置：");
+   scanf("%d",&i);
+   insert(&la,x,i);
+   break;
+  case 5://删除
+   printf("请输入删除元素：");
+   scanf("%d",&x);
+   printf("请输入删除元素位置：");
+   scanf("%d",&i);
+   Delete(&la,x,i);
+   break;
+  case 6://修改
+   printf("请输入修改元素位置：");
+   scanf("%d",&i);
+   printf("将元素修改为：");
+   scanf("%d",&x);
+   modify(&la, x, i);
+   break;
+  case 0://退出
+   break;
+  default:printf("你选错了，请选择0-6"); 
+  }
+  
+ }
+}
