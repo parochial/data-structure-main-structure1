@@ -1,0 +1,428 @@
+
+
+
+#include "stdio.h"
+#include "stdlib.h"
+
+//定义链表
+struct lnode 
+{
+ int coefficient;
+ int index;
+ struct lnode *next;
+};
+
+//链表初始化
+struct lnode* initlist(struct lnode*l)
+{
+ l=(struct lnode*)malloc(sizeof(struct lnode));
+ l->next=NULL;
+}
+
+
+//建立链表
+struct lnode* build(struct lnode *l)
+{
+ struct lnode *p,*q;
+ int coefficient,index;
+ l->next=0;
+ do {
+  printf("请输入系数：");
+     scanf("%d",&coefficient);
+     printf("请输入指数（输入-1退出）：");
+  scanf("%d",&index);
+  if(index!=-1)
+  {
+   p=(struct lnode *)malloc(sizeof(struct lnode));
+   p->coefficient=coefficient;
+   p->index=index;
+   p->next=l->next ;
+   l->next=p;
+  }
+
+ }while(index!=-1);
+ return l;
+}
+
+//输出建立的链表
+struct lnode* show(struct lnode *l)
+{
+ struct lnode *p;
+ p=l->next;
+ printf("建立的链表为：\n");
+   while(p!=0)
+ {
+   printf("%d",p->coefficient);
+   printf("x^");
+   printf("%d",p->index);
+   p=p->next;
+   if(p!=0)
+   {
+    if(p->coefficient>0) 
+    printf("+");
+   }
+  
+ }
+   printf("\n");
+  
+}
+
+//链表求值
+struct lnode* evaluation(struct lnode *l,int x)
+{
+ struct lnode *p;
+ int sum,mul,i;
+ p=l->next;
+ sum=0;
+ while(p!=0)
+ {
+  mul=1;
+  for(i=0;i<p->index;i++)
+  {
+   mul=mul*x;  
+  }
+  sum=sum+mul*(p->coefficient);
+  p=p->next;
+ }
+ return sum;
+ printf("\n");
+}
+
+
+//链表求导
+struct lnode* derivation(struct lnode *l)
+{
+ struct lnode *p;
+ struct lnode *q,*r,*ld;
+ int j=0,k=0;
+ p=l->next;
+ q=(struct lnode *)malloc(sizeof(struct lnode));
+ q->next=NULL;
+ ld=q;
+ while(p!=0)
+ {
+  k=(p->index)*(p->coefficient);
+  j=(p->index)-1;
+  r=(struct lnode *)malloc(sizeof(struct lnode));
+  r->coefficient=k;
+  r->index=j;
+  q->next=r;
+  q=r;
+  p=p->next;
+ }
+ q->next=0;
+ printf("求导的结果为：\n");
+ q=ld->next;
+ show(q);
+}
+
+
+//链表相加
+struct lnode* add(struct lnode* la,struct lnode* lb)
+{
+ struct lnode *pa,*pb,*pc,*q,*r;//指示用的
+ struct lnode *lc;//新的链表
+ 
+    pa=la->next; pb=lb->next;
+    lc=(struct lnode*)malloc(sizeof(struct lnode));
+    lc->next=NULL; 
+    r=lc;
+ //pa=la->next;   用la头结点作为lc的头结点的
+    while(pa!=0&&pb!=0)
+    { 
+  if(pa->index>pb->index)
+  {
+   pc=(struct lnode*)malloc(sizeof(struct lnode));
+   pc->coefficient=pa->coefficient;
+   pc->index=pa->index;
+   lc->next=pc;
+   lc=pc;
+   pa=pa->next; 
+  }
+ else  if(pa->index<pb->index)
+  {
+   pc=(struct lnode*)malloc(sizeof(struct lnode));
+   pc->coefficient=pb->coefficient;
+   pc->index=pb->index;
+   lc->next=pc;
+   lc=pc;
+  pb=pb->next; 
+  }
+  else //if(pa->zhishu==pb->zhishu)
+  { 
+   pc=(struct lnode*)malloc(sizeof(struct lnode));
+   pc->coefficient=pa->coefficient+pb->coefficient;
+   pc->index=pb->index;
+   if(pc->coefficient==0)
+    free(pc);
+   else
+   {
+    lc->next=pc;
+    lc=pc;
+   }
+   pa=pa->next;
+   pb=pb->next;
+  }
+  
+    }
+ while(pa!=0)
+ {  
+  pc=(struct lnode*)malloc(sizeof(struct lnode));
+  pc->coefficient=pa->coefficient;
+  pc->index=pa->index;
+  lc->next=pc;
+   lc=pc;
+  pa=pa->next;
+ }
+ while(pb!=0)
+ {
+  pc=(struct lnode*)malloc(sizeof(struct lnode));
+  pc->coefficient=pb->coefficient;
+  pc->index=pb->index;
+  lc->next=pc;
+  lc=pc;
+  pb=pb->next;
+  
+ }
+ lc->next=0;
+ //输出
+ lc=r->next;
+ while(lc!=0)
+ {
+  printf("%d",lc->coefficient);
+  printf("x^");
+  printf("%d",lc->index);
+  lc=lc->next;
+  if(lc!=0)
+  {
+   if(lc->coefficient>0)
+  { 
+   printf("+");
+  }
+  }
+  
+ }printf("\n");
+ return r;
+}
+
+
+//链表相减
+struct lnode* subduction(struct lnode* la,struct lnode* lb)
+{
+ struct lnode *pa,*pb,*pc,*q,*r;//指示用的
+ struct lnode *lc;//新的链表
+ 
+    pa=la->next; pb=lb->next;
+    lc=(struct lnode*)malloc(sizeof(struct lnode));
+    lc->next=NULL; 
+    r=lc;
+ //pa=la->next;   用la头结点作为lc的头结点的
+    while(pa!=0&&pb!=0)
+    { 
+  if(pa->index>pb->index)
+  {
+   pc=(struct lnode*)malloc(sizeof(struct lnode));
+   pc->coefficient=pa->coefficient;
+   pc->index=pa->index;
+   lc->next=pc;
+   lc=pc;
+   pa=pa->next; 
+  }
+  else  if(pa->index<pb->index)
+  {
+   pc=(struct lnode*)malloc(sizeof(struct lnode));
+   pc->coefficient=-pb->coefficient;
+   pc->index=pb->index;
+   lc->next=pc;
+   lc=pc;
+   pb=pb->next; 
+  }
+  else //if(pa->zhishu==pb->zhishu)
+  { 
+   pc=(struct lnode*)malloc(sizeof(struct lnode));
+   pc->coefficient=pa->coefficient-pb->coefficient;
+   pc->index=pb->index;
+   if(pc->coefficient==0)
+    free(pc);
+   else
+   {
+    lc->next=pc;
+    lc=pc;
+   }
+   pa=pa->next;
+   pb=pb->next;
+  }
+  
+    }
+ while(pa!=0)
+ {  
+  pc=(struct lnode*)malloc(sizeof(struct lnode));
+  pc->coefficient=pa->coefficient;
+  pc->index=pa->index;
+  lc->next=pc;
+  lc=pc;
+  pa=pa->next;
+ }
+ while(pb!=0)
+ {
+  pc=(struct lnode*)malloc(sizeof(struct lnode));
+  pc->coefficient=0-pb->coefficient;
+  pc->index=pb->index;
+  lc->next=pc;
+  lc=pc;
+  pb=pb->next;
+  
+ }
+ lc->next=0;
+ //输出
+ lc=r->next;
+ while(lc!=0)
+ {
+  printf("%d",lc->coefficient);
+  printf("x^");
+  printf("%d",lc->index);
+  lc=lc->next;
+  if(lc!=0)
+  {
+   if(lc->coefficient>0)
+   { 
+    printf("+");
+   }
+  }
+  
+ }printf("\n");
+}
+
+
+//相乘
+struct lnode* mul(struct lnode *la,struct lnode*lb)
+{
+ struct lnode *lc,*ld;
+ struct lnode *p,*q,*r,*s,*t;
+    
+ lc=(struct lnode *)malloc(sizeof(struct lnode));
+ lc->next=0;
+ t=lc;
+ 
+ p=la->next;
+ while(p!=0)
+ {
+  ld=(struct lnode *)malloc(sizeof(struct lnode));
+     ld->next=0;
+  s=ld;
+  q=lb->next;
+  while(q!=0)
+  {
+   r=(struct lnode*)malloc(sizeof(struct lnode));
+   r->coefficient=p->coefficient*q->coefficient;
+   r->index=p->index+q->index;
+   s->next=r;
+   s=r;
+   q=q->next;
+  }
+  r->next=0;
+
+  lc=add(lc,ld);
+  p=p->next;
+ }
+ 
+ t=lc->next;
+ while(t!=0)
+ {
+  printf("%d",t->coefficient);
+  printf("x^");
+  printf("%d",t->index);
+  t=t->next;
+  if(t!=0)
+  {
+   if(t->coefficient>0)
+   { 
+    printf("+");
+   }
+  }
+  
+ }printf("\n");
+}
+
+
+ 
+
+ 
+//退出
+
+main()
+{
+ //定义链表
+struct lnode *la;
+struct lnode *lb;
+struct lnode *lc;
+ int i=0;
+ int x=0;
+ int choice=1;//菜单选项
+ 
+ while(choice!=0)
+ {
+  printf("数组操作程序\n");
+  printf("1--创建多项式\n");
+  printf("2--输出\n");
+  printf("3--求值\n");
+  printf("4--求导\n");
+  printf("5--加法\n");
+  printf("6--减法\n");
+  printf("7--乘法\n");
+  printf("8--退出\n");
+  printf("请选择：");
+  
+  scanf("%d",&choice);
+  switch (choice)
+  {
+  case 1://创建
+   la=initlist(la);
+   la=build(la); 
+   break;
+  case 2://输出 
+   printf("输入的多项式为：");
+   show(la);
+   break;
+  case 3://求值
+   printf("请输入X的值：");
+   scanf("%d",&x);
+   i=evaluation(la,x);
+   printf("结果为%d",i);
+   break;
+  case 4://求导
+   printf("求导结果为：");
+   derivation(la,x);
+   break;
+  case 5://加法
+   printf("请再输入一个多项式：");
+   lb=initlist(lb);
+   lb=build(lb); 
+   printf("相加后结果为：");
+   lc=add(la,lb);
+   break;
+  case 6://减法
+   printf("请再输入一个多项式：");
+   lb=initlist(lb);
+   lb=build(lb); 
+   printf("相减后结果为：");
+   lc=subduction(la,lb);
+   break;
+  case 7:
+   printf("请再输入一个多项式：");
+   lb=initlist(lb);
+   lb=build(lb); 
+   printf("相乘后结果为：");
+   lc=mul(la,lb);
+  case 8://退出
+   break;
+  default:printf("你选错了，请选择0-8"); 
+  }
+  
+ }
+}
+  
+
+ 
+
+  
