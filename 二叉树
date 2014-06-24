@@ -1,0 +1,143 @@
+
+#include "stdio.h"
+#include "stdlib.h"
+
+//定义树的结构
+struct binarytree 
+{
+ int data;
+ struct binarytree *parent;
+ struct binarytree *rchild;
+ struct binarytree *lchild;
+};
+
+//二叉树初始化
+struct binarytree* initlist(struct binarytree *t)
+{
+ t=(struct binarytree *) malloc(sizeof(struct binarytree));
+ t->data=1;
+ t->parent=NULL;
+}
+
+
+//建立二叉树
+struct binarytree * create()
+{
+ int a;
+ struct binarytree *t;
+ scanf("%d",&a);
+ if(a!=0)
+ {
+  t=(struct binarytree *)malloc(sizeof(struct binarytree));
+  t->data=a;
+  printf("\n请输入%d节点的左子节点\n",t->data);
+  t->lchild=create();
+  if(t->lchild!=0)
+   t->lchild->parent=t;
+  printf("\n请输入%d节点的右子节点\n",t->data);
+  t->rchild=create();
+  if(t->rchild!=0)
+   t->rchild->parent=t;
+ }
+ else t=0;
+ return t;
+}
+
+//二叉树的遍历
+void traversal(struct binarytree *t)
+{
+ struct binarytree *p;
+ int c;
+ p=t;
+ if(p!=0)
+ {
+  printf("%d\n",p->data);
+  traversal(p->lchild);
+  traversal(p->rchild);
+  
+ }
+}
+
+//求树的叶子
+void leaf(struct binarytree* t,int *count)
+{
+ struct binarytree *p;
+ p=t;
+ if(p!=0)
+ {
+	 leaf(p->lchild,count);
+	 if(p->lchild==0&&p->rchild==0)
+		(*count)++;
+	 leaf(p->rchild,count);
+ }
+}
+
+//求树的高度
+int height(struct binarytree *t)
+{
+
+	int h1,h2,max=0;
+	if(t!=0)
+	{h1=height(t->lchild);
+	h2=height(t->rchild);
+    max=h1>h2?h1:h2;
+		}return max+1;
+
+}
+
+
+
+ 
+//退出
+
+main()
+{
+ //定义链表
+struct binarytree *t;
+
+ int i=0;
+ int x=0;
+ int count=0;
+ int h;
+ int choice=1;//菜单选项
+ 
+ while(choice!=0)
+ {
+  printf("二叉树操作程序\n");
+  printf("1--创建\n");
+  printf("2--输入\n");
+  printf("3--求树的叶子个数\n");
+  printf("4--求树的高度\n");
+ /* printf("5--加法\n");
+  printf("6--减法\n");
+  printf("7--乘法\n");*/
+  printf("8--退出\n");
+  printf("请选择：");
+  
+          scanf("%d",&choice);
+  switch (choice)
+  {
+  case 1://初始化
+   t=initlist(t);
+   break;
+  case 2://输入 
+   printf("输入数字0结束：");
+   t=create(); 
+   traversal(t);
+   break;
+  case 3://求树的叶子
+    leaf(t,&count);
+	printf("树的叶子有%d个\n",count);
+   break;
+ case 4://求树的度
+   printf("树的高度为%d\n",height(t));
+   break;
+  case 8://退出
+   break;
+  default:printf("你选错了，请选择0-8"); 
+  }
+  
+ }
+}
+
+ 
